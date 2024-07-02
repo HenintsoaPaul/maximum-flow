@@ -3,20 +3,19 @@ from models import Node
 from ui.containers import MyFrame
 
 class LabelNode(tk.Label):
-    """
-    Une étiquette qui affiche des informations sur un noeud spécifique.
-    
-    Attributes:
-        _parent (tk.Frame): Le conteneur parent de l'étiquette.
-        _node (Node): L'objet Node associé à l'étiquette.
-    """
-    
     def __init__(self, node: Node, parent: MyFrame):
         super().__init__()
         self._parent = parent
         self._node = node
         
-        self.configure(text=str(node.title))
+        self.configure(
+            text=str(node.title),
+            width=4,
+            height=2,
+            relief='flat',
+            borderwidth=0
+        )
+        
         self.pack()
     
     @property
