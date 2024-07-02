@@ -1,11 +1,12 @@
 from models.Node import Node
 
 class NodeLink:
-    def __init__(self, node: Node, capacity: int, flow: int, forward: bool) -> None:
-        self._node: Node = node
+    def __init__(self, node_title: str, capacity: int, flow: int, forward: bool) -> None:
+        self._node: Node = Node(title=node_title)
         self._capacity: int = capacity
         self._flow: int = flow
         self._forward: bool = forward
+        self._visited: bool = False
 
     @property
     def node(self) -> Node:
