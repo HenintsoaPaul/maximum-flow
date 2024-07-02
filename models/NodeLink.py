@@ -47,3 +47,13 @@ class NodeLink:
         if not isinstance(value, bool):
             raise ValueError("Forward must be a boolean.")
         self._forward = value
+        
+    @property
+    def visited(self) -> bool:
+        return self._visited
+    
+    @visited.setter
+    def visited(self, value: bool) -> None:
+        if not isinstance(value, bool):
+            raise ValueError("Visisted must be a boolean.")
+        self._visited = value
