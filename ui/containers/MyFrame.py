@@ -1,3 +1,4 @@
+import tkinter as tk
 from models.Graph import Graph
 from ui.elements.LabelNode import LabelNode
 from ui.behavior.Draggable import Draggable
@@ -11,8 +12,28 @@ class MyFrame(BaseFrame):
         self.graph: Graph = Graph(head_title='S', tail_title='P')
         self.graph.initialize_data()
         
-        self.setup_ui(width=width, height=height, bg=bg, title=title)
+        self.setup_ui(width=width, height=height, bg=bg, title=title, tool_frame_height=50)
+        self.setup_listeners()
+        
         self.setup_content()
+        
+    def setup_listeners(self) -> None:
+        def on_click() -> None:
+            print("Looking for a way to increment the flow...")
+            print(f"Current flow: {self.graph.get_curr_flow()}")
+            flow_states = self.graph.get_flow_states(node_title='S', flow_states=[])
+            self.graph.increment_graph(flow_states)
+            print(f"Current flow: {self.graph.get_curr_flow()}\n")
+            self.update_canvas()
+            
+        btn_ok = tk.Button(self._tool_frame, text="Gooo!", command=on_click)
+        btn_ok.pack(side=tk.LEFT)
+        
+        btn_save = tk.Button(self._tool_frame, text="Save", command=self.save_label_nodes_position)
+        btn_save.pack(side=tk.LEFT)
+        
+        btn_load = tk.Button(self._tool_frame, text="Load", command=self.load_label_nodes_position)
+        btn_load.pack(side=tk.LEFT)
         
     def setup_content(self) -> None:
         """Initialise le contenu à afficher."""
@@ -30,6 +51,26 @@ class MyFrame(BaseFrame):
             if label_node.node == node_title:
                 return label_node
         return None
+    
+    def save_label_nodes_position(self) -> None:
+        # Save the position of each label node in a JSON file
+        positions = {}
+        for label_node in self.list_label_nodes:
+            positions[label_node.node] = (label_node.winfo_x(), label_node.winfo_y())
+        
+        import json
+        with open('label_nodes_positions.json', 'w') as file:
+            json.dump(positions, file)
+            
+    def load_label_nodes_position(self) -> None:
+        # Load the position of each label node from a JSON file
+        import json
+        with open('label_nodes_positions.json', 'r') as file:
+            positions = json.load(file)
+            
+        for label_node in self.list_label_nodes:
+            x, y = positions[label_node.node]
+            label_node.place(x=x, y=y)
             
     def update_canvas(self) -> None:
         print("Updating canvas...")

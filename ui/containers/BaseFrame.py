@@ -21,7 +21,7 @@ class BaseFrame(tk.Tk):
     def Canvas(self) -> tk.Canvas:
         return self._canvas
     
-    def setup_ui(self, width: int, height: int, bg: str, title: str) -> None:
+    def setup_ui(self, width: int, height: int, bg: str, title: str, tool_frame_height: int) -> None:
         def setup_container(self, width: int, height: int, bg: str) -> None:
             """Configure le conteneur principal."""
             self._bg = bg
@@ -47,13 +47,23 @@ class BaseFrame(tk.Tk):
                 bg=self.Bg
             )
             self._canvas.pack()
+            
+        def setup_tool_frame(self, tool_frame_height) -> None:
+            """Initialise le frame pour les outils."""
+            self._tool_frame = tk.Frame(
+                self, 
+                width=self.Width, 
+                height=tool_frame_height
+            )
+            self._tool_frame.pack()
     
         setup_container(self, width=width, height=height, bg=bg)
         setup_main_frame(self)
         setup_canvas(self)
+        setup_tool_frame(self, tool_frame_height)
         
         self.title(title)
-        self.geometry(f"{self.Width + 10}x{self.Height + 10}")
+        self.geometry(f"{self.Width + 10}x{self.Height + tool_frame_height}")
         self.resizable(False, False)
         
         
