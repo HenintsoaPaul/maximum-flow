@@ -122,3 +122,25 @@ class Graph:
             if min_potential < fs.potential:
                 min_potential = fs.potential
         return min_potential
+    
+    def increment_node_link(self, start: str, end: str, plus: bool, incrementation: int) -> None:
+        in_out: list[NodeLink] = self.get_in_out_node_link(start, end)
+        if plus:
+            in_out[0].flow += incrementation
+            in_out[1].flow += incrementation
+        else:
+            in_out[0].flow -= incrementation
+            in_out[1].flow -= incrementation
+    
+    def increment_graph(self, flow_states: list[FlowState]) -> None:
+        min_potential = self.get_min_potential(flow_states)
+        for fs in flow_states:
+            self.increment_node_link(
+                start=fs.start,
+                end=fs.end,
+                plus=fs.plus, 
+                incrementation=min_potential
+            )
+                
+        curr_flow = self.get_curr_flow()
+        print(f"Current flow: {curr_flow}")
