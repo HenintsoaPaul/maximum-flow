@@ -3,20 +3,12 @@ from ui.containers import MyFrame
 
 class LabelNode(tk.Label):
     def __init__(self, node: str, parent: MyFrame):
-        super().__init__()
+        super().__init__(parent, text=str(node), width=4, height=2)
+        self.configure(borderwidth=0, relief="solid")
+        
         self._parent: MyFrame = parent
         self._node: str = node
         
-        self.configure(
-            text=str(node),
-            width=4,
-            height=2,
-            relief='flat',
-            borderwidth=0
-        )
-        
-        self.pack()
-    
     @property
     def node(self) -> str:
         return self._node

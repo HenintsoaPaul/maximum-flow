@@ -7,72 +7,78 @@ class Graph:
     def __init__(self, head_title: str, tail_title: str) -> None:
         self._head_title: str = head_title
         self._tail_title: str = tail_title
-        self._body: Dict[str, Set[NodeLink]] = {}
+        self._body: Dict[str, list[NodeLink]] = {}
         
     def initialize_data(self) -> None:
         self._body = {
-            'S': {
+            'S': [
                 NodeLink('A', capacity=10, flow=7, forward=True),
                 NodeLink('D', capacity=20, flow=20, forward=True),
                 NodeLink('G', capacity=20, flow=11, forward=True)
-            },
-            'A': {
+            ]
+            ,
+            'A': [
                 NodeLink('S', capacity=10, flow=7, forward=False),
                 NodeLink('B', capacity=5, flow=3, forward=True),
                 NodeLink('E', capacity=4, flow=4, forward=True)
-            },
-            'B': {
+            ],
+            'B': [
                 NodeLink('A', capacity=5, flow=3, forward=False),
                 NodeLink('C', capacity=4, flow=4, forward=True),
                 NodeLink('E', capacity=2, flow=1, forward=False)
-            },
-            'C': {
+            ],
+            'C': [
                 NodeLink('B', capacity=4, flow=4, forward=False),
                 NodeLink('E', capacity=9, flow=4, forward=False),
                 NodeLink('F', capacity=8, flow=0, forward=True),
                 NodeLink('P', capacity=8, flow=8, forward=True)
-            },
-            'D': {
+            ],
+            'D': [
                 NodeLink('S', capacity=20, flow=20, forward=False),
                 NodeLink('E', capacity=18, flow=13, forward=True),
                 NodeLink('H', capacity=15, flow=10, forward=True),
                 NodeLink('G', capacity=3, flow=3, forward=False)
-            },
-            'E': {
+            ],
+            'E': [
                 NodeLink('A', capacity=4, flow=4, forward=False),
                 NodeLink('B', capacity=2, flow=1, forward=True),
                 NodeLink('C', capacity=9, flow=4, forward=True),
                 NodeLink('D', capacity=18, flow=13, forward=False),
                 NodeLink('F', capacity=10, flow=10, forward=True),
                 NodeLink('H', capacity=2, flow=2, forward=True)
-            },
-            'F': {
+            ],
+            'F': [
                 NodeLink('C', capacity=8, flow=0, forward=False),
                 NodeLink('E', capacity=10, flow=10, forward=False),
                 NodeLink('H', capacity=10, flow=10, forward=False),
                 NodeLink('I', capacity=10, flow=0, forward=True),
                 NodeLink('P', capacity=30, flow=20, forward=True)
-            },
-            'G': {
+            ],
+            'G': [
                 NodeLink('S', capacity=20, flow=20, forward=False),
                 NodeLink('D', capacity=3, flow=3, forward=True),
                 NodeLink('H', capacity=15, flow=8, forward=True)
-            },
-            'H': {
+            ],
+            'H': [
                 NodeLink('D', capacity=15, flow=10, forward=False),
                 NodeLink('E', capacity=2, flow=2, forward=False),
                 NodeLink('F', capacity=10, flow=10, forward=True),
                 NodeLink('G', capacity=15, flow=8, forward=False),
                 NodeLink('I', capacity=10, flow=10, forward=True)
-            },
-            'I': {
+            ],
+            'I': [
                 NodeLink('F', capacity=10, flow=0, forward=False),
                 NodeLink('H', capacity=10, flow=10, forward=False),
                 NodeLink('P', capacity=20, flow=10, forward=True)
-            }
+            ],
+            'P': [
+                NodeLink('C', capacity=8, flow=8, forward=False),
+                NodeLink('F', capacity=30, flow=20, forward=False),
+                NodeLink('I', capacity=20, flow=10, forward=False)
+            ]
         }
     
-    def get_neighbors(self, node_title: str) -> Set[NodeLink]:
+    def get_neighbors(self, node_title: str) -> list[NodeLink]:
         try:
             return self._body[node_title]
         except KeyError:

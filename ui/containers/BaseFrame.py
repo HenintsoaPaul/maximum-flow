@@ -13,7 +13,7 @@ class BaseFrame(tk.Tk):
         return self._height
     
     @property
-    def Bg(self) -> int:
+    def Bg(self) -> str:
         return self._bg
     
     @property
@@ -45,6 +45,7 @@ class BaseFrame(tk.Tk):
                 height=self.Height,
                 bg=self.Bg
             )
+            self._canvas.pack()
     
         setup_container(self, width=width, height=height, bg=bg)
         setup_main_frame(self)
@@ -53,3 +54,10 @@ class BaseFrame(tk.Tk):
         self.title(title)
         self.geometry(f"{self.Width + 10}x{self.Height + 10}")
         self.resizable(False, False)
+        
+    def draw_line(self, label_1: tk.Label, label_2: tk.Label, color: str, width: int, tags: str) -> None:
+        x1, y1 = label_1.winfo_x(), label_1.winfo_y()
+        x2, y2 = label_2.winfo_x(), label_2.winfo_y()
+        
+        # print(f"Draw line from ({x1}, {y1}) to ({x2}, {y2})")
+        self._canvas.create_line(x1, y1, x2, y2, fill=color, width=width, tags=tags)
