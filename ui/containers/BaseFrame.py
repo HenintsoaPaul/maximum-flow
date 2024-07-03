@@ -1,4 +1,5 @@
 import tkinter as tk
+from ui.elements.LabelNode import LabelNode
 
 class BaseFrame(tk.Tk):
     def __init__(self) -> None:
@@ -55,9 +56,18 @@ class BaseFrame(tk.Tk):
         self.geometry(f"{self.Width + 10}x{self.Height + 10}")
         self.resizable(False, False)
         
-    def draw_line(self, label_1: tk.Label, label_2: tk.Label, color: str, width: int, tags: str) -> None:
+        
+    def draw_line(self, label_1: LabelNode, label_2: LabelNode, flow: int, capacity: int, tags: str) -> None:
+        # Line
         x1, y1 = label_1.winfo_x(), label_1.winfo_y()
         x2, y2 = label_2.winfo_x(), label_2.winfo_y()
+        self.Canvas.create_line(x1, y1, x2, y2, fill="black", width=2, tags=tags)
         
-        # print(f"Draw line from ({x1}, {y1}) to ({x2}, {y2})")
-        self._canvas.create_line(x1, y1, x2, y2, fill=color, width=width, tags=tags)
+        x_center = (x1 + x2) / 2
+        y_center = (y1 + y2) / 2
+        
+        # Text flow
+        self.Canvas.create_text(x_center, y_center - 5, text=flow, fill="red", tags="flow", font=("Cascadia Code", 15))
+        
+        # Text capacity
+        self.Canvas.create_text(x_center, y_center + 15, text=capacity, fill="blue", tags="capacity", font=("Cascadia Code", 15))

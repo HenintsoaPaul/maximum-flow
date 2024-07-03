@@ -37,14 +37,16 @@ class MyFrame(BaseFrame):
         
     def draw_connections(self) -> None:
         self.Canvas.delete('conx')
+        self.Canvas.delete('flow')
+        self.Canvas.delete('capacity')
+        
         for label_node in self.list_label_nodes:
             if not self.graph._tail_title == label_node.node:
                 for node_link in self.graph._body[label_node.node]:
                     if node_link.forward:
                         self.draw_line(
                             label_1=label_node, 
-                            label_2=self.get_label_node(node_link.node), 
-                            color='black', 
-                            width=3, 
-                            tags='conx'
+                            label_2=self.get_label_node(node_link.node),
+                            tags='conx', 
+                            flow=node_link.flow, capacity=node_link.capacity
                         )
