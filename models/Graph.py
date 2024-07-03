@@ -32,8 +32,43 @@ class Graph:
                 NodeLink('F', capacity=8, flow=0, forward=True),
                 NodeLink('P', capacity=8, flow=8, forward=True)
             },
+            'D': {
+                NodeLink('S', capacity=20, flow=20, forward=False),
+                NodeLink('E', capacity=18, flow=13, forward=True),
+                NodeLink('H', capacity=15, flow=10, forward=True),
+                NodeLink('G', capacity=3, flow=3, forward=False)
+            },
+            'E': {
+                NodeLink('A', capacity=4, flow=4, forward=False),
+                NodeLink('B', capacity=2, flow=1, forward=True),
+                NodeLink('C', capacity=9, flow=4, forward=True),
+                NodeLink('D', capacity=18, flow=13, forward=False),
+                NodeLink('F', capacity=10, flow=10, forward=True),
+                NodeLink('H', capacity=2, flow=2, forward=True)
+            },
             'F': {
+                NodeLink('C', capacity=8, flow=0, forward=False),
+                NodeLink('E', capacity=10, flow=10, forward=False),
+                NodeLink('H', capacity=10, flow=10, forward=False),
+                NodeLink('I', capacity=10, flow=0, forward=True),
                 NodeLink('P', capacity=30, flow=20, forward=True)
+            },
+            'G': {
+                NodeLink('S', capacity=20, flow=20, forward=False),
+                NodeLink('D', capacity=3, flow=3, forward=True),
+                NodeLink('H', capacity=15, flow=8, forward=True)
+            },
+            'H': {
+                NodeLink('D', capacity=15, flow=10, forward=False),
+                NodeLink('E', capacity=2, flow=2, forward=False),
+                NodeLink('F', capacity=10, flow=10, forward=True),
+                NodeLink('G', capacity=15, flow=8, forward=False),
+                NodeLink('I', capacity=10, flow=10, forward=True)
+            },
+            'I': {
+                NodeLink('F', capacity=10, flow=0, forward=False),
+                NodeLink('H', capacity=10, flow=10, forward=False),
+                NodeLink('P', capacity=20, flow=10, forward=True)
             }
         }
     
