@@ -57,3 +57,10 @@ class NodeLink:
         if not isinstance(value, bool):
             raise ValueError("Visisted must be a boolean.")
         self._visited = value
+
+
+    @property
+    def is_free(self) -> bool:
+        """Si le chemin est non visite et que flow non maximal."""
+        
+        return not self.visited and (self.flow < self.capacity)

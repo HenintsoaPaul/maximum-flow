@@ -51,7 +51,15 @@ class Graph:
         neighbors = self.get_neighbors(node_title)
         return {node_link for node_link in neighbors if not node_link.visited}
     
+    def get_free_neighbors(self, node_title: str) -> Set[NodeLink]:
+        """Retourne les voisins qui sont libres, cad non visites et flow non maximal."""
+        
+        neighbors = self.get_neighbors(node_title)
+        return {node_link for node_link in neighbors if node_link.is_free}
+    
     def get_curr_flow(self) -> int:
+        """Permet d'obtenir le flow actuel de la graphe."""
+        
         curr_flow: int = 0
         for node_link in self._body[self._head_title]:
             curr_flow += node_link.flow
