@@ -43,10 +43,16 @@ class Graph:
             msg = f"No links found for node titled '{node_title}'."
             raise KeyError(msg)
         
+    def get_forward_neighbors(self, node_title: str) -> Set[NodeLink]:
+        neighbors = self.get_neighbors(node_title)
+        return {node_link for node_link in neighbors if node_link.forward}
+        
     def get_unvisited_neighbors(self, node_title: str) -> Set[NodeLink]:
         neighbors = self.get_neighbors(node_title)
         return {node_link for node_link in neighbors if not node_link.visited}
     
     def get_curr_flow(self) -> int:
-        # Sum all the flow in each Node link from the head to the tail.
-        pass
+        curr_flow: int = 0
+        for node_link in self._body[self._head_title]:
+            curr_flow += node_link.flow
+        return curr_flow

@@ -8,6 +8,7 @@ from models.Graph import Graph
 my_graph = Graph(head_title="S", tail_title="P")
 my_graph.initialize_data()
 
-my_graph.get_unvisited_neighbors('A')
+curr_flow = my_graph.get_curr_flow()
+print(f"Current flow: {curr_flow}")
 
 print("Hi")
