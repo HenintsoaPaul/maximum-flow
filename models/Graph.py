@@ -1,5 +1,6 @@
 from typing import Dict, Set
 from models.NodeLink import NodeLink
+from models.FlowState import FlowState
 
 
 class Graph:
@@ -43,17 +44,12 @@ class Graph:
             msg = f"No links found for node titled '{node_title}'."
             raise KeyError(msg)
         
-    def get_forward_neighbors(self, node_title: str) -> Set[NodeLink]:
-        neighbors = self.get_neighbors(node_title)
-        return {node_link for node_link in neighbors if node_link.forward}
-        
     def get_unvisited_neighbors(self, node_title: str) -> Set[NodeLink]:
         neighbors = self.get_neighbors(node_title)
         return {node_link for node_link in neighbors if not node_link.visited}
     
     def get_free_neighbors(self, node_title: str) -> Set[NodeLink]:
         """Retourne les voisins qui sont libres, cad non visites et flow non maximal."""
-        
         neighbors = self.get_neighbors(node_title)
         return {node_link for node_link in neighbors if node_link.is_free}
     
@@ -64,3 +60,56 @@ class Graph:
         for node_link in self._body[self._head_title]:
             curr_flow += node_link.flow
         return curr_flow
+    
+    
+    def mark_as_visited(self, node_start: str, node_end: str) -> None:
+        for node_link in self.get_neighbors(node_start):
+            if node_link.node.title == node_end:
+                node_link.visited = True
+                break
+        for node_link in self.get_neighbors(node_end):
+            if node_link.node.title == node_start:
+                node_link.visited = True
+                break
+    
+    def increment_flow(self, node_title: str, marked_nodes: Dict[str, FlowState]) -> bool:
+        """
+        Permet d'augmenter la valeur du flow actuel.
+        
+        How
+        ---
+        L'algorithme cherche un chemin possible pour arriver jusqu'a la fin de la graphe. 
+        Si le traje est possible, le flow actuel de tout le graphe aura augmente. 
+        Sinon, on retourne une expection.
+        
+        Parameters
+        ----------
+        `node_title` : str
+            Le nom de la tete de la graphe.
+        """
+        
+        free_neighbors: Set[NodeLink] = self.get_free_neighbors(node_title)
+        
+        # There is NO WAY
+        if len(free_neighbors) == 0:
+            raise Exception("No way bro...")
+        else:
+            # Choose the next Node
+            import random
+            selected_index = random.randint(0, len(free_neighbors) - 1)
+            next_neighbor: NodeLink = free_neighbors[selected_index]
+            
+            # Mark the choosen Node
+            pt = next_neighbor.flow
+            if next_neighbor.forward:
+                pt = next_neighbor.capacity - next_neighbor.flow
+            marked_nodes.add(
+                next_neighbor.node.title,
+                FlowState(plus=next_neighbor.forward, potential=pt)
+            )
+            
+            self.mark_as_visited(node_start=node_title, node_end=next_neighbor.node.title)
+            if next_neighbor.node.title == self._tail_title:
+                return True
+            else:
+                self.increment_flow(node_title=next_neighbor.node.title, marked_nodes=marked_nodes)
