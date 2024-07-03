@@ -1,5 +1,4 @@
 import tkinter as tk
-from models.Node import Node
 from ui.elements.LabelNode import LabelNode
 from ui.behavior.Draggable import Draggable
 from ui.containers.BaseFrame import BaseFrame
@@ -8,7 +7,6 @@ class MyFrame(BaseFrame):
     def __init__(self, width: int, height: int, bg: str, title: str) -> None:
         super().__init__()
         
-        self._list_nodes: list[Node] = []
         self._list_label_nodes: list[LabelNode] = []
         
         self.setup_ui(width=width, height=height, bg=bg, title=title)
@@ -17,8 +15,7 @@ class MyFrame(BaseFrame):
     def setup_content(self) -> None:
         """Initialise le contenu à afficher."""
         data = [
-            Node(title='A'),
-            Node(title='B')
+            "A", "B"
         ]
         for node in data:
             label_node = LabelNode(node=node, parent=self)

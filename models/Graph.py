@@ -96,7 +96,9 @@ class Graph:
     def get_in_out_node_link(self, start: str, end: str) -> list[NodeLink]:
         r: list[NodeLink] = []
         r.append( [node_link for node_link in self.get_neighbors(start) if node_link.node == end][0] )
-        r.append( [node_link for node_link in self.get_neighbors(end) if node_link.node == start][0] )
+        
+        if not self._tail_title == end:
+            r.append( [node_link for node_link in self.get_neighbors(end) if node_link.node == start][0] )
         return r
     
     def mark_as_visited(self, node_start: str, node_end: str) -> None:
@@ -140,17 +142,17 @@ class Graph:
                 plus=node_link.forward, 
                 potential=node_link.potential
             ))
-            self.mark_as_visited(node_start=node_title, node_end=next_node)
             
             if next_node == self._tail_title:
                 return flow_states
             else:
+                self.mark_as_visited(node_start=node_title, node_end=next_node)
                 return self.get_flow_states(node_title=next_node, flow_states=flow_states)
 
     def get_min_potential(self, flow_states: list[FlowState]) -> int:
-        min_potential: int = 0
+        min_potential: int = flow_states[0].potential
         for fs in flow_states:
-            if min_potential < fs.potential:
+            if min_potential > fs.potential:
                 min_potential = fs.potential
         return min_potential
     
@@ -158,13 +160,19 @@ class Graph:
         in_out: list[NodeLink] = self.get_in_out_node_link(start, end)
         if plus:
             in_out[0].flow += incrementation
-            in_out[1].flow += incrementation
+            
+            if not self._tail_title == end:
+                in_out[1].flow += incrementation
         else:
             in_out[0].flow -= incrementation
-            in_out[1].flow -= incrementation
+            
+            if not self._tail_title == end:
+                in_out[1].flow -= incrementation
     
     def increment_graph(self, flow_states: list[FlowState]) -> None:
         min_potential = self.get_min_potential(flow_states)
+        if min_potential == 0:
+            return None
         for fs in flow_states:
             self.increment_node_link(
                 start=fs.start,
@@ -172,6 +180,3 @@ class Graph:
                 plus=fs.plus, 
                 incrementation=min_potential
             )
-                
-        curr_flow = self.get_curr_flow()
-        print(f"Current flow: {curr_flow}")
