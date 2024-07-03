@@ -64,3 +64,9 @@ class NodeLink:
         """Si le chemin est non visite et que flow non maximal."""
         
         return not self.visited and (self.flow < self.capacity)
+    
+    @property
+    def potential(self) -> int:
+        if self.forward:
+            return self.capacity - self.flow
+        return self.flow

@@ -50,6 +50,7 @@ class Graph:
     
     def get_free_neighbors(self, node_title: str) -> Set[NodeLink]:
         """Retourne les voisins qui sont libres, cad non visites et flow non maximal."""
+        
         neighbors = self.get_neighbors(node_title)
         return {node_link for node_link in neighbors if node_link.is_free}
     
@@ -61,7 +62,6 @@ class Graph:
             curr_flow += node_link.flow
         return curr_flow
     
-    
     def mark_as_visited(self, node_start: str, node_end: str) -> None:
         for node_link in self.get_neighbors(node_start):
             if node_link.node.title == node_end:
@@ -72,15 +72,16 @@ class Graph:
                 node_link.visited = True
                 break
     
-    def increment_flow(self, node_title: str, marked_nodes: Dict[str, FlowState]) -> bool:
+    def get_marked_nodes(self, node_title: str, marked_nodes: Dict[str, FlowState]) -> Dict[str, FlowState]:
         """
-        Permet d'augmenter la valeur du flow actuel.
+        Retourne un dictionnaire contenant les possibilites d'augmentation
+        de flow de la graphe.
         
         How
         ---
         L'algorithme cherche un chemin possible pour arriver jusqu'a la fin de la graphe. 
-        Si le traje est possible, le flow actuel de tout le graphe aura augmente. 
-        Sinon, on retourne une expection.
+        Si le trajet est possible, on retourne un dictionnaire concernant les
+        possibilites d'augmentation de la graphe. Sinon, on retourne une expection.
         
         Parameters
         ----------
@@ -97,19 +98,17 @@ class Graph:
             # Choose the next Node
             import random
             selected_index = random.randint(0, len(free_neighbors) - 1)
-            next_neighbor: NodeLink = free_neighbors[selected_index]
+            node_link: NodeLink = free_neighbors[selected_index]
+            next_node: str = node_link.node.title
             
             # Mark the choosen Node
-            pt = next_neighbor.flow
-            if next_neighbor.forward:
-                pt = next_neighbor.capacity - next_neighbor.flow
             marked_nodes.add(
-                next_neighbor.node.title,
-                FlowState(plus=next_neighbor.forward, potential=pt)
+                next_node,
+                FlowState(plus=node_link.forward, potential=node_link.potential)
             )
+            self.mark_as_visited(node_start=node_title, node_end=next_node)
             
-            self.mark_as_visited(node_start=node_title, node_end=next_neighbor.node.title)
-            if next_neighbor.node.title == self._tail_title:
-                return True
+            if next_node == self._tail_title:
+                return marked_nodes
             else:
-                self.increment_flow(node_title=next_neighbor.node.title, marked_nodes=marked_nodes)
+                self.increment_flow(node_title=next_node, marked_nodes=marked_nodes)
