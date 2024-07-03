@@ -1,21 +1,19 @@
-from models.Node import Node
-
 class NodeLink:
     def __init__(self, node_title: str, capacity: int, flow: int, forward: bool) -> None:
-        self._node: Node = Node(title=node_title)
+        self._node: str = node_title
         self._capacity: int = capacity
         self._flow: int = flow
         self._forward: bool = forward
         self._visited: bool = False
 
     @property
-    def node(self) -> Node:
+    def node(self) -> str:
         return self._node
 
     @node.setter
-    def node(self, value: Node) -> None:
-        if not isinstance(value, Node):
-            raise ValueError("Value must be an instance of Node.")
+    def node(self, value: str) -> None:
+        if not isinstance(value, str):
+            raise ValueError("Value must be an instance of str.")
         self._node = value
 
     @property

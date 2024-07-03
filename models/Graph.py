@@ -43,16 +43,12 @@ class Graph:
         except KeyError:
             msg = f"No links found for node titled '{node_title}'."
             raise KeyError(msg)
-        
-    def get_unvisited_neighbors(self, node_title: str) -> Set[NodeLink]:
-        neighbors = self.get_neighbors(node_title)
-        return {node_link for node_link in neighbors if not node_link.visited}
     
-    def get_free_neighbors(self, node_title: str) -> Set[NodeLink]:
+    def get_free_neighbors(self, node_title: str) -> list[NodeLink]:
         """Retourne les voisins qui sont libres, cad non visites et flow non maximal."""
         
         neighbors = self.get_neighbors(node_title)
-        return {node_link for node_link in neighbors if node_link.is_free}
+        return [node_link for node_link in neighbors if node_link.is_free]
     
     def get_curr_flow(self) -> int:
         """Permet d'obtenir le flow actuel de la graphe."""
@@ -64,8 +60,8 @@ class Graph:
     
     def get_in_out_node_link(self, start: str, end: str) -> list[NodeLink]:
         r: list[NodeLink] = []
-        r.append( [node_link for node_link in self.get_neighbors(start) if node_link.node.title == end][0] )
-        r.append( [node_link for node_link in self.get_neighbors(end) if node_link.node.title == start][0] )
+        r.append( [node_link for node_link in self.get_neighbors(start) if node_link.node == end][0] )
+        r.append( [node_link for node_link in self.get_neighbors(end) if node_link.node == start][0] )
         return r
     
     def mark_as_visited(self, node_start: str, node_end: str) -> None:
@@ -100,7 +96,7 @@ class Graph:
             import random
             selected_index = random.randint(0, len(free_neighbors) - 1)
             node_link: NodeLink = free_neighbors[selected_index]
-            next_node: str = node_link.node.title
+            next_node: str = node_link.node
             
             # Mark the choosen Node
             flow_states.append(FlowState(

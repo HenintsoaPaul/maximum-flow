@@ -11,4 +11,6 @@ my_graph.initialize_data()
 curr_flow = my_graph.get_curr_flow()
 print(f"Current flow: {curr_flow}")
 
-print("Hi")
+my_graph.get_flow_states(node_title='S', flow_states=[])
+
+print('Hmmm')
