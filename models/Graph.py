@@ -10,30 +10,30 @@ class Graph:
         
     def initialize_data(self) -> None:
         self._body = {
-            'S': Set([
+            'S': {
                 NodeLink('A', capacity=10, flow=7, forward=True),
                 NodeLink('D', capacity=20, flow=20, forward=True),
                 NodeLink('G', capacity=20, flow=11, forward=True)
-            ]),
-            'A': Set([
+            },
+            'A': {
                 NodeLink('S', capacity=10, flow=7, forward=False),
                 NodeLink('B', capacity=5, flow=3, forward=True),
                 NodeLink('E', capacity=4, flow=4, forward=True)
-            ]),
-            'B': Set([
+            },
+            'B': {
                 NodeLink('A', capacity=5, flow=3, forward=False),
                 NodeLink('C', capacity=4, flow=4, forward=True),
                 NodeLink('E', capacity=2, flow=1, forward=False)
-            ]),
-            'C': Set([
+            },
+            'C': {
                 NodeLink('B', capacity=4, flow=4, forward=False),
                 NodeLink('E', capacity=9, flow=4, forward=False),
                 NodeLink('F', capacity=8, flow=0, forward=True),
                 NodeLink('P', capacity=8, flow=8, forward=True)
-            ]),
-            'F': Set([
+            },
+            'F': {
                 NodeLink('P', capacity=30, flow=20, forward=True)
-            ])
+            }
         }
     
     def get_neighbors(self, node_title: str) -> Set[NodeLink]:
