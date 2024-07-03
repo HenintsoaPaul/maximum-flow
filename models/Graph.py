@@ -62,25 +62,26 @@ class Graph:
             curr_flow += node_link.flow
         return curr_flow
     
-    def mark_as_visited(self, node_start: str, node_end: str) -> None:
-        for node_link in self.get_neighbors(node_start):
-            if node_link.node.title == node_end:
-                node_link.visited = True
-                break
-        for node_link in self.get_neighbors(node_end):
-            if node_link.node.title == node_start:
-                node_link.visited = True
-                break
+    def get_in_out_node_link(self, start: str, end: str) -> list[NodeLink]:
+        r: list[NodeLink] = []
+        r.append( [node_link for node_link in self.get_neighbors(start) if node_link.node.title == end][0] )
+        r.append( [node_link for node_link in self.get_neighbors(end) if node_link.node.title == start][0] )
+        return r
     
-    def get_marked_nodes(self, node_title: str, marked_nodes: Dict[str, FlowState]) -> Dict[str, FlowState]:
+    def mark_as_visited(self, node_start: str, node_end: str) -> None:
+        in_out: list[NodeLink] = self.get_in_out_node_link(start=node_start, end=node_end)
+        in_out[0].visited = True
+        in_out[1].visited = True
+    
+    def get_flow_states(self, node_title: str, flow_states: list[FlowState]) -> list[FlowState]:
         """
-        Retourne un dictionnaire contenant les possibilites d'augmentation
+        Retourne une liste contenant les possibilites d'augmentation
         de flow de la graphe.
         
         How
         ---
         L'algorithme cherche un chemin possible pour arriver jusqu'a la fin de la graphe. 
-        Si le trajet est possible, on retourne un dictionnaire concernant les
+        Si le trajet est possible, on retourne une liste concernant les
         possibilites d'augmentation de la graphe. Sinon, on retourne une expection.
         
         Parameters
@@ -102,13 +103,22 @@ class Graph:
             next_node: str = node_link.node.title
             
             # Mark the choosen Node
-            marked_nodes.add(
-                next_node,
-                FlowState(plus=node_link.forward, potential=node_link.potential)
-            )
+            flow_states.append(FlowState(
+                start=node_title,
+                end=next_node,
+                plus=node_link.forward, 
+                potential=node_link.potential
+            ))
             self.mark_as_visited(node_start=node_title, node_end=next_node)
             
             if next_node == self._tail_title:
-                return marked_nodes
+                return flow_states
             else:
-                self.increment_flow(node_title=next_node, marked_nodes=marked_nodes)
+                return self.get_flow_states(node_title=next_node, flow_states=flow_states)
+
+    def get_min_potential(self, flow_states: list[FlowState]) -> int:
+        min_potential: int = 0
+        for fs in flow_states:
+            if min_potential < fs.potential:
+                min_potential = fs.potential
+        return min_potential
