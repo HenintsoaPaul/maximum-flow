@@ -1,4 +1,4 @@
-from typing import Dict, Set
+from typing import Dict
 from models.NodeLink import NodeLink
 from models.FlowState import FlowState
 
@@ -7,7 +7,22 @@ class Graph:
     def __init__(self, head_title: str, tail_title: str) -> None:
         self._head_title: str = head_title
         self._tail_title: str = tail_title
+        self.visited: list[str] = [self._head_title]
         self._body: Dict[str, list[NodeLink]] = {}
+    
+    @property    
+    def full_head(self) -> bool:
+        for node_link in self.get_neighbors(self._head_title):
+            if node_link.flow < node_link.capacity:
+                return False
+        return True
+    
+    @property
+    def full_tail(self) -> bool:
+        for node_link in self.get_neighbors(self._tail_title):
+            if node_link.flow < node_link.capacity:
+                return False
+        return True
         
     def initialize_data(self) -> None:
         self._body = {
@@ -89,7 +104,7 @@ class Graph:
         """Retourne les voisins qui sont libres, cad non visites et flow non maximal."""
         
         neighbors = self.get_neighbors(node_title)
-        return [node_link for node_link in neighbors if node_link.is_free]
+        return [node_link for node_link in neighbors if node_link.is_free and node_link.node not in self.visited]
     
     def get_curr_flow(self) -> int:
         """Permet d'obtenir le flow actuel de la graphe."""
@@ -109,8 +124,19 @@ class Graph:
     
     def mark_as_visited(self, node_start: str, node_end: str) -> None:
         in_out: list[NodeLink] = self.get_in_out_node_link(start=node_start, end=node_end)
-        in_out[0].visited = True
-        in_out[1].visited = True
+        self.visited.append(in_out[0].node)
+        self.visited.append(in_out[1].node)
+        
+    def print_flow_states(self, flow_states: list[FlowState]) -> None:
+        for fs in flow_states:
+            print(f"{fs.start} -> {fs.end} : {fs.potential}")
+        pass
+   
+    def get_real_flow_states(self, node_title: str) -> list[FlowState]:
+        flow_states = []
+        while len(flow_states) == 0:
+            flow_states = self.get_flow_states(node_title, flow_states)
+        return flow_states
     
     def get_flow_states(self, node_title: str, flow_states: list[FlowState]) -> list[FlowState]:
         """
@@ -129,11 +155,21 @@ class Graph:
             Le nom de la tete de la graphe.
         """
         
-        free_neighbors: Set[NodeLink] = self.get_free_neighbors(node_title)
+        if self.full_head:
+            raise Exception("Head is full...")
+        if self.full_tail:
+            raise Exception("Tail is full")
+        
+        free_neighbors: list[NodeLink] = self.get_free_neighbors(node_title)
         
         # There is NO WAY
         if len(free_neighbors) == 0:
-            raise Exception("No way bro...")
+            print("No way bro...")
+            self.print_flow_states(flow_states)
+            print("U see broo ?!\n")
+            self.visited = [self._head_title]
+            return []
+            # raise Exception("No way bro...")
         else:
             # Choose the next Node
             import random
@@ -142,17 +178,20 @@ class Graph:
             next_node: str = node_link.node
             
             # Mark the choosen Node
-            flow_states.append(FlowState(
+            fs = FlowState(
                 start=node_title,
                 end=next_node,
                 plus=node_link.forward, 
                 potential=node_link.potential
-            ))
+            )
+            flow_states.append(fs)
             
             if next_node == self._tail_title:
+                self.visited = [self._head_title]
                 return flow_states
             else:
-                self.mark_as_visited(node_start=node_title, node_end=next_node)
+                # self.mark_as_visited(node_start=node_title, node_end=next_node)
+                self.visited.append(next_node)
                 return self.get_flow_states(node_title=next_node, flow_states=flow_states)
 
     def get_min_potential(self, flow_states: list[FlowState]) -> int:
