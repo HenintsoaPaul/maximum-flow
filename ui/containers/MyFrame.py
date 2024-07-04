@@ -21,10 +21,12 @@ class MyFrame(BaseFrame):
         def on_click() -> None:
             print("Looking for a way to increment the flow...")
             print(f"Current flow: {self.graph.get_curr_flow()}")
-            flow_states = self.graph.get_flow_states(node_title='S', flow_states=[])
+            flow_states = self.graph.get_real_flow_states(node_title='S')
+            self.graph.print_flow_states(flow_states)
             self.graph.increment_graph(flow_states)
-            print(f"Current flow: {self.graph.get_curr_flow()}\n")
+            print(f"Current flow: {self.graph.get_curr_flow()}\n---------------------------------------------------------\n\n")
             self.update_canvas()
+            
             
         btn_ok = tk.Button(self._tool_frame, text="Gooo!", command=on_click)
         btn_ok.pack(side=tk.LEFT)
@@ -73,7 +75,6 @@ class MyFrame(BaseFrame):
             label_node.place(x=x, y=y)
             
     def update_canvas(self) -> None:
-        print("Updating canvas...")
         self.draw_connections()
         
     def draw_connections(self) -> None:

@@ -59,9 +59,11 @@ class NodeLink:
 
     @property
     def is_free(self) -> bool:
-        """Si le chemin est non visite et que flow non maximal."""
-        
-        return not self.visited and (self.flow < self.capacity)
+        """Si le flow du chemin est non maximal."""
+        if self.forward:
+            return self.flow < self.capacity
+        else:
+            return self.flow > 0
     
     @property
     def potential(self) -> int:

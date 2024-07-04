@@ -9,8 +9,9 @@ my_frame.mainloop()
 # my_graph.initialize_data()
 # print(f"Current flow: {my_graph.get_curr_flow()}")
 
-# flow_states = my_graph.get_flow_states(node_title='S', flow_states=[])
+# flow_states = my_graph.get_real_flow_states('S')
 # my_graph.increment_graph(flow_states)
+# my_graph.print_flow_states(flow_states)
 # print(f"Current flow: {my_graph.get_curr_flow()}")
 
 # print('Hmmm')
